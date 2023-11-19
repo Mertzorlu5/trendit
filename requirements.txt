@@ -3,3 +3,4 @@ praw
 pandas
 matplotlib
 seaborn
+python-dotenv
