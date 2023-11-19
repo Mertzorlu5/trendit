@@ -5,17 +5,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+secrets = st.secrets
 
-# Initialize Reddit instance
 reddit = praw.Reddit(
-    client_id=os.getenv('REDDIT_CLIENT_ID'),
-    client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
-    user_agent=os.getenv('USER_AGENT'),
+    client_id=secrets["REDDIT_CLIENT_ID"],
+    client_secret=secrets["REDDIT_CLIENT_SECRET"],
+    user_agent=secrets["USER_AGENT"]
 )
+
 
 def get_posts(subreddit, post_type, number_of_posts=20):
     subreddit_chosen = reddit.subreddit(subreddit)
@@ -73,3 +71,4 @@ if fetch_button and subreddits:
 
 
 #Tiktokhelp,TikTokAds,dropshipping, ecommerce, ecommercemarketing, ecommerce
+#when you are deploying on streamlit there's a advanced settings section put your keys there.
