@@ -1,0 +1,6 @@
+gradio
+praw
+os
+pandas
+matplotlib
+seaborn
