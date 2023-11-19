@@ -11,7 +11,8 @@ secrets = st.secrets
 reddit = praw.Reddit(
     client_id=secrets["REDDIT_CLIENT_ID"],
     client_secret=secrets["REDDIT_CLIENT_SECRET"],
-   
+    user_agent=secrets["USER_AGENT"]
+
 )
 
 
