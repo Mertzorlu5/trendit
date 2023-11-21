@@ -16,7 +16,6 @@ reddit = praw.Reddit(
 )
 
 
-
 def get_posts(subreddit, post_type, number_of_posts=20):
     subreddit_chosen = reddit.subreddit(subreddit)
     posts = {
@@ -37,13 +36,7 @@ def get_posts(subreddit, post_type, number_of_posts=20):
 
     return pd.DataFrame(post_data)
 
-def get_online_members(subreddit):
-    subreddit_chosen = reddit.subreddit(subreddit)
-    try:
-        return subreddit_chosen.active_user_count
-    except AttributeError:
-        return None
-
+# Streamlit UI
 st.title('Reddit Trend Analyzer')
 
 with st.sidebar:
@@ -54,44 +47,28 @@ with st.sidebar:
 if fetch_button and subreddits:
     subreddit_list = subreddits.split(',')
     all_posts = pd.DataFrame()
-    online_data = []
 
     for subreddit in subreddit_list:
         posts = get_posts(subreddit.strip(), post_type)
         all_posts = pd.concat([all_posts, posts], ignore_index=True)
 
-        online_count = get_online_members(subreddit.strip())
-        if online_count is not None:
-            online_data.append({'Subreddit': subreddit, 'Online Users': online_count})
-
-    # Display posts data
     st.dataframe(all_posts)
 
-    # Visualization 1: Cumulative upvotes for each subreddit
-    st.subheader("Cumulative Upvotes for Each Subreddit")
+    # Aggregating scores for each subreddit
     subreddit_scores = all_posts.groupby('Subreddit')['Score'].sum().reset_index()
+
+    # Sorting values for better visualization
     subreddit_scores = subreddit_scores.sort_values(by='Score', ascending=False)
+
+    # Visualization: Bar chart of cumulative upvotes for each subreddit
+    st.subheader("Cumulative Upvotes for Each Subreddit")
     plt.figure(figsize=(10, 6))
     sns.barplot(data=subreddit_scores, x='Subreddit', y='Score')
-    plt.title('Which Subreddit Has Most Upvoted Questions/Topics')
+    plt.title('Which Sub Has Most Upvoted Questions/Topics')
     plt.xlabel('Subreddit')
     plt.ylabel('Total Upvotes')
     plt.xticks(rotation=45)
     st.pyplot(plt)
-
-    # Visualization 2: Current online users in each subreddit
-    if online_data:
-        st.subheader("Current Online Users in Subreddits")
-        df_online = pd.DataFrame(online_data)
-        plt.figure(figsize=(10, 6))
-        plt.bar(df_online['Subreddit'], df_online['Online Users'], color='skyblue')
-        plt.xlabel('Subreddit')
-        plt.ylabel('Online Users')
-        plt.title('Current Online Users in Selected Subreddits')
-        plt.xticks(rotation=45)
-        st.pyplot(plt)
-    else:
-        st.write("No online user data available for the selected subreddits.")
 
 
 #Tiktokhelp,TikTokAds,dropshipping, ecommerce, ecommercemarketing, ecommerce,AmazonSeller,TikTok,eBaySellers,eBaySellerAdvice,FulfillmentByAmazon,Etsy,woocommerce,shopify,DropShipping101,Dropshipping_Guide
